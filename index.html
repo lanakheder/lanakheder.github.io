@@ -267,6 +267,30 @@ footer{padding:36px 0 50px;font-size:13px;color:var(--muted);text-align:center}
 
 .reveal{opacity:0;transform:translateY(16px);transition:opacity .6s,transform .6s}
 .reveal.in{opacity:1;transform:none}
+.navbtns{display:flex;gap:10px;align-items:center}
+.pdfbtn{color:var(--cocoa);padding:10px 18px}
+.pdfbtn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.contact .rows{display:flex;flex-wrap:wrap;gap:12px}
+@media (max-width:560px){.pdfbtn span{display:none}.pdfbtn{padding:10px 12px}}
+/* print / PDF version */
+#printwork{display:none}
+body.print nav.top,body.print #work,body.print footer,body.print .ctas,body.print .pdfbtn{display:none!important}
+body.print #printwork{display:block}
+body.print .reveal{opacity:1;transform:none}
+body.print *{transition:none!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pw-head{padding:10px 0 0}
+.pw-proj{background:var(--bg);border:1px solid var(--line);border-radius:28px;padding:34px 40px;margin-top:28px;break-before:page}
+.pw-proj .pw-client{font-size:12px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--sage-d);margin-bottom:6px}
+.pw-proj h2{font-family:var(--display);font-weight:400;font-size:40px;line-height:1.05;margin:4px 0 14px}
+.pw-proj h2 em{font-family:var(--serif);font-style:italic;font-weight:600;color:var(--sage-d);font-size:1.12em}
+.pw-proj .intro{font-size:16px;color:var(--muted)}
+.pw-proj h4{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--sage-d);margin:26px 0 12px;break-after:avoid}
+.pw-proj .hint,.pw-proj .zoom,.pw-proj .ytnote{display:none}
+.pw-proj .points>div,.pw-proj .shot,.pw-proj .article,.pw-proj .logo-tile,.pw-proj .video{break-inside:avoid}
+body.print section{padding-top:40px}
+body.print #skills,body.print #contact{break-before:page}
+body.print .stats::after{content:'View the interactive version at lanakheder.github.io';grid-column:1/-1;font-size:13px;color:var(--muted);text-align:center;padding-top:6px}
+@page{size:A4;margin:10mm}
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none}*{transition:none!important;scroll-behavior:auto}}
 </style>
 </head>
@@ -288,7 +312,7 @@ footer{padding:36px 0 50px;font-size:13px;color:var(--muted);text-align:center}
       <li><a href="#skills">Skills</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
-    <a class="btn btn-dark" href="mailto:lanakheder@gmail.com">Get in touch</a>
+    <div class="navbtns"><a class="btn btn-line pdfbtn" href="Lana-Kheder-Portfolio.pdf" download><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg><span>Download PDF</span></a><a class="btn btn-dark" href="mailto:lanakheder@gmail.com">Get in touch</a></div>
   </div>
 </nav>
 
@@ -378,7 +402,7 @@ footer{padding:36px 0 50px;font-size:13px;color:var(--muted);text-align:center}
       <svg class="clip" aria-hidden="true"><use href="#paperclip"/></svg>
       <h2><em>Let's</em><strong>WORK TOGETHER</strong></h2>
       <p>Thanks for looking through my work. I'm open to roles in digital marketing, SEO, content, copywriting and social media, and to freelance projects.</p>
-      <div class="rows"><a class="btn" href="mailto:lanakheder@gmail.com">✉ lanakheder@gmail.com</a></div>
+      <div class="rows"><a class="btn" href="mailto:lanakheder@gmail.com">✉ lanakheder@gmail.com</a><a class="btn" href="Lana-Kheder-Portfolio.pdf" download>↓ Download portfolio (PDF)</a></div>
     </div>
   </div>
 </section>
@@ -620,6 +644,17 @@ const nav=document.getElementById('nav');addEventListener('scroll',()=>nav.class
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 document.getElementById('yr').textContent=new Date().getFullYear();
+if(/[?&]print/.test(location.search)){
+  document.body.classList.add('print');
+  const w=document.createElement('section'); w.id='printwork'; w.className='wrap';
+  let h='';
+  P.forEach(p=>{render(p);h+=`<article class="pw-proj"><div class="pw-client">${p.client}</div>${mb.innerHTML}</article>`;});
+  w.innerHTML=h; mb.innerHTML='';
+  w.querySelectorAll('.player').forEach(pl=>{const a=document.createElement('a');a.href='https://www.youtube.com/watch?v='+pl.dataset.yt;a.className='ytlink';a.innerHTML=pl.querySelector('button,a').innerHTML;a.style.cssText='position:absolute;inset:0;display:grid;place-items:center';pl.innerHTML='';pl.appendChild(a);});
+  w.querySelectorAll('.shot').forEach(b=>{const d=document.createElement('div');d.className=b.className;d.innerHTML=b.innerHTML;b.replaceWith(d);});
+  w.querySelectorAll('img').forEach(i=>i.loading='eager');
+  document.getElementById('work').after(w);
+}
 </script>
 </body>
 </html>
